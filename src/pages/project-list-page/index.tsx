@@ -11,10 +11,31 @@ import {
   CardTitle,
   CardDate,
   EmptyText,
+  CardBg,
+  CardOverlay,
+  CardContent,
 } from './index.css';
 import { type ProjectDto } from '../../types/dto/projects.dto';
 import { listProjects } from '../../api/projects.api';
 import { CreateProjectModal } from '../../components/create-project-modal';
+import calender from '../../assets/calendar.png';
+import usericon from '../../assets/usericon.png';
+import bridge1 from '../../assets/bridge1.jpg';
+import bridge2 from '../../assets/bridge2.jpg';
+import bridge3 from '../../assets/bridge3.jpg';
+import bridge4 from '../../assets/bridge4.jpg';
+import bridge5 from '../../assets/bridge5.jpg';
+import bridge6 from '../../assets/bridge6.jpg';
+import bridge7 from '../../assets/bridge7.jpg';
+import bridge8 from '../../assets/bridge8.jpg';
+import bridge9 from '../../assets/bridge9.jpg';
+import bridge10 from '../../assets/bridge10.jpg';
+import bridge11 from '../../assets/bridge11.jpg';
+import bridge12 from '../../assets/bridge12.jpg';
+import bridge13 from '../../assets/bridge13.jpg';
+import bridge14 from '../../assets/bridge14.jpg';
+import bridge15 from '../../assets/bridge15.jpg';
+import bridge16 from '../../assets/bridge16.jpg';
 
 function ymd(date: string | Date) {
   const d = typeof date === 'string' ? new Date(date) : date;
@@ -68,6 +89,29 @@ export const ProjectListPage = () => {
       alive = false;
     };
   }, []);
+  const BRIDGES = [
+    bridge1,
+    bridge2,
+    bridge3,
+    bridge4,
+    bridge5,
+    bridge6,
+    bridge7,
+    bridge8,
+    bridge9,
+    bridge10,
+    bridge11,
+    bridge12,
+    bridge13,
+    bridge14,
+    bridge15,
+    bridge16,
+  ];
+
+  function randomBridge() {
+    const idx = Math.floor(Math.random() * BRIDGES.length);
+    return BRIDGES[idx];
+  }
 
   return (
     <Page
@@ -117,14 +161,46 @@ export const ProjectListPage = () => {
 
           {(projects || []).map(p => (
             <CardBase key={p.id} to={`/projects/${p.id}`}>
-              <div style={{ flex: 1 }}>
-                <CardTitle>
-                  {p.projectName} ({p.projectCode})
-                </CardTitle>
-              </div>
-              <CardDate>{ymd(p.createdAt)}</CardDate>
+              {/* 배경 이미지 레이어 */}
+              <CardBg src={randomBridge()} alt="" />
+              {/* 선택: 살짝 어둡게 오버레이 (원치 않으면 제거) */}
+              <CardOverlay />
+
+              {/* 내용 레이어 */}
+              <CardContent>
+                <CardTitle>{p.projectName}</CardTitle>
+                <div style={{ fontSize: 13 }}>{p.projectCode}</div>
+
+                <div>
+                  <CardDate>
+                    <img style={{ width: 12 }} src={usericon} alt="" />{' '}
+                    {p.authorEmail}
+                  </CardDate>
+                  <CardDate>
+                    <img style={{ width: 12 }} src={calender} alt="" />{' '}
+                    {ymd(p.createdAt)}
+                  </CardDate>
+                </div>
+              </CardContent>
             </CardBase>
           ))}
+          {/* {(projects || []).map(p => (
+            <CardBase key={p.id} to={`/projects/${p.id}`}>
+              <img src={bridge} style={{ display: 'flex' }} />
+              <CardTitle>{p.projectName}</CardTitle>
+              {p.projectCode}
+              <div>
+                <CardDate>
+                  <img style={{ width: '12px' }} src={usericon} />{' '}
+                  {p.authorEmail}
+                </CardDate>
+                <CardDate>
+                  <img style={{ width: '12px' }} src={calender} />{' '}
+                  {ymd(p.createdAt)}
+                </CardDate>
+              </div>
+            </CardBase>
+          ))} */}
         </Row>
 
         {projects && projects.length === 0 && (
