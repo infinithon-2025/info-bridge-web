@@ -1,7 +1,6 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { ProjectListPage } from './pages/project-list-page';
 import ProjectsPage from './pages/projects';
 
 function App() {
@@ -9,7 +8,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" />
+          <Route path="/" element={<ProjectListPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
         </Routes>
       </BrowserRouter>
