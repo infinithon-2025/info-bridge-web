@@ -41,10 +41,48 @@ export const Row = styled.div`
   gap: 16px;
 `;
 
+export const CardBg = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 67%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+`;
+
+export const CardOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  height: 67%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0.5)
+  );
+`;
+
+export const CardContent = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  gap: 8px;
+  height: 100%;
+  color: #111827;
+`;
+
 export const CardBase = styled(Link)`
+  position: relative;
+  overflow: hidden;
+
   flex: 1 1 calc((100% - 16px) / 2);
   max-width: calc((100% - 16px) / 2);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  justify-content: end;
+  text-align: start;
+  aligin-items: start;
 
   @media (min-width: 1024px) {
     flex-basis: calc((100% - 32px) / 3);
@@ -57,7 +95,7 @@ export const CardBase = styled(Link)`
 
   aspect-ratio: 4 / 3;
   background: #fff;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 16px;
   display: flex;
@@ -65,7 +103,6 @@ export const CardBase = styled(Link)`
   transition: box-shadow 0.15s ease;
   text-decoration: none;
   color: inherit;
-
   &:hover {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
   }
@@ -98,17 +135,19 @@ export const CreateButton = styled.button`
 `;
 
 export const CardTitle = styled.h3`
-  font-size: 16px;
+  font-size: 32px;
   font-weight: 600;
   line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  margin-bottom: 12px;
+  color: white;
 `;
 
 export const CardDate = styled.div`
-  margin-top: 8px;
+  margin-top: 4px;
   font-size: 13px;
   color: #737373;
 `;
