@@ -188,3 +188,11 @@ thumb
 sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,node,reactbuild/
+
+# production
+/build
+build/
+
+# 또는 더 구체적으로
+/build/*
+!/build/.gitkeep
