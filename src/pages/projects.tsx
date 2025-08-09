@@ -11,25 +11,30 @@ export default function ProjectsPage() {
         gap: 16,
         padding: 16,
         height: '100vh',
+        maxHeight: '100vh',
         width: '100%',
         backgroundColor: '#f0f0f0',
-        alignItems: 'center',
-        justifyContent: 'center',
         position: 'relative',
         boxSizing: 'border-box',
+        overflowY: 'hidden',
+        '@media (max-width: 768px)': {
+          overflowY: 'auto',
+        },
       }}
     >
       <div>navbar</div>
       <GridContainer
         css={{
           gridTemplateColumns: '1fr 1.5fr 1fr',
-          gridTemplateRows: 'auto',
+          gridTemplateRows: '1fr',
           justifyContent: 'center',
-          height: '90%',
+          height: '100%',
           gap: 16,
           padding: 16,
+          overflowY: 'hidden',
           '@media (max-width: 768px)': {
             gridTemplateColumns: '1fr',
+            gridTemplateRows: 'repeat(3, 1fr)',
             gap: 12,
             padding: 8,
           },
