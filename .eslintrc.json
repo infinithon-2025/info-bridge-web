@@ -1,13 +1,22 @@
 {
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "node": true
   },
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
     "plugin:react-hooks/recommended",
     "plugin:prettier/recommended"
+  ],
+  "ignorePatterns": [
+    "**/*.test.*",
+    "**/*.spec.*",
+    "src/setupTests.*",
+    "src/**/__tests__/**",
+    "src/**/__mocks__/**"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -22,11 +31,15 @@
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
     "no-unused-vars": "warn",
-    "no-console": "warn"
+    "no-console": "warn",
+    "no-undef": "error"
   },
   "settings": {
     "react": {
       "version": "detect"
     }
+  },
+  "globals": {
+    "React": "readonly"
   }
 }
