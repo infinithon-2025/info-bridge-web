@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export const Page = styled.div`
   width: 100vw;
   min-height: 100vh;
-  background: #fafafa;
+  background: #f0f0f0;
   display: flex;
   flex-direction: column;
 `;
@@ -25,7 +25,7 @@ export const Title = styled.h1`
 
 export const Main = styled.main`
   flex: 1;
-  padding: 32px 24px;
+  padding: 16px 24px;
   width: 100%;
 `;
 
@@ -44,6 +44,7 @@ export const Row = styled.div`
 export const CardBase = styled(Link)`
   flex: 1 1 calc((100% - 16px) / 2);
   max-width: calc((100% - 16px) / 2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   @media (min-width: 1024px) {
     flex-basis: calc((100% - 32px) / 3);
@@ -76,6 +77,7 @@ export const CreateCard = styled(CardBase)`
   border-color: #d4d4d4;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   &:hover {
     border-color: #a3a3a3;

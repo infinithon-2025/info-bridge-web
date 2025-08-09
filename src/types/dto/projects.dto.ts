@@ -4,7 +4,6 @@ export type ProjectDto = {
   projectName: string;
   projectCode: string;
   projectKeyword?: string[];
-  links?: string[];
   createdAt: string;
   updatedAt: string;
 };
