@@ -113,10 +113,7 @@ export default function RecommendationsList({
     return (
       <EmptyState>
         <EmptyStateIcon>🔗</EmptyStateIcon>
-        <EmptyStateText>링크가 없습니다</EmptyStateText>
-        <EmptyStateSubtext>
-          아래 추가 버튼을 눌러 참고할 링크를 추가해보세요
-        </EmptyStateSubtext>
+        <EmptyStateText>연관 추천 링크가 없습니다</EmptyStateText>
       </EmptyState>
     );
   }

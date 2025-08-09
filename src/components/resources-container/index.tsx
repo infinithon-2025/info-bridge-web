@@ -1,9 +1,14 @@
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../button';
 import Container from '../container';
 import ResourcesList from '../resources-list';
 import HR from '../hr';
 import { FaPlus } from 'react-icons/fa';
+import { LinkItemDto, AddLinkRequestDto } from '../../types/dto/projects.dto';
+import ResourcesListSkeleton from '../skeleton/resources-skeleton';
+import AddLinkModal from '../add-link-modal';
+import { useAddLink } from '../../hooks/projects/use-projects';
 
 const ResourcesWrapper = styled(Container)`
   display: flex;
@@ -77,10 +82,85 @@ const sampleResources = [
   },
 ];
 
-export default function ResourcesContainer() {
+interface ResourcesContainerProps {
+  items?: LinkItemDto[];
+  loading?: boolean;
+  error?: string | null;
+  projectId?: number;
+  onResourceAdded?: () => void;
+}
+
+const transformToResourcesFormat = (items: LinkItemDto[]) => {
+  return items.map(item => ({
+    ...item,
+    id: item.id?.toString() ?? 'undefined',
+    type: item.materialType || 'unknown',
+    label: item.title || 'Untitled',
+    href: item.link || '#',
+    checked: item.isFixed && item.isActive,
+  }));
+};
+
+export default function ResourcesContainer({
+  items = [],
+  loading = true,
+  error = null,
+  projectId,
+  onResourceAdded,
+}: ResourcesContainerProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { addLink, loading: addLoading } = useAddLink();
+
   const handleResourceChange = (id: string, checked: boolean) => {
     console.log(`Resource ${id} is now ${checked ? 'checked' : 'unchecked'}`);
   };
+
+  const handleAddClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleLinkSubmit = async (
+    linkData: Omit<AddLinkRequestDto, 'project'>
+  ) => {
+    if (!projectId) {
+      console.error('Project ID is required to add links');
+      return;
+    }
+
+    try {
+      await addLink(projectId, linkData);
+      setIsModalOpen(false);
+
+      // Notify parent component to refresh resources
+      if (onResourceAdded) {
+        onResourceAdded();
+      }
+    } catch (error) {
+      console.error('Failed to add link:', error);
+    }
+  };
+
+  const resourcesData = transformToResourcesFormat(items) ?? sampleResources;
+
+  if (error) {
+    return (
+      <ResourcesWrapper>
+        <ResourcesHeader>
+          <p style={{ margin: '0 0 8px 0', textAlign: 'start' }}>출처</p>
+          <HR height={1} margin="0" />
+        </ResourcesHeader>
+        <ResourcesContent>
+          <div style={{ padding: '16px', textAlign: 'center', color: 'red' }}>
+            Error: {error}
+          </div>
+        </ResourcesContent>
+      </ResourcesWrapper>
+    );
+  }
 
   return (
     <ResourcesWrapper>
@@ -90,15 +170,33 @@ export default function ResourcesContainer() {
       </ResourcesHeader>
 
       <ResourcesContent>
-        <ResourcesList
-          resources={sampleResources}
-          onResourceChange={handleResourceChange}
-        />
+        {loading ? (
+          <ResourcesListSkeleton />
+        ) : (
+          <ResourcesList
+            resources={resourcesData}
+            onResourceChange={handleResourceChange}
+          />
+        )}
       </ResourcesContent>
 
       <ResourcesFooter>
-        <Button variant="primary" title="추가" leftIcon={FaPlus} isFull />
+        <Button
+          variant="primary"
+          title="추가"
+          leftIcon={FaPlus}
+          isFull
+          onClick={handleAddClick}
+          disabled={!projectId}
+        />
       </ResourcesFooter>
+
+      <AddLinkModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onSubmit={handleLinkSubmit}
+        loading={addLoading}
+      />
     </ResourcesWrapper>
   );
 }
