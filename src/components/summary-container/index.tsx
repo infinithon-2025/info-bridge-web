@@ -1,7 +1,15 @@
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import ReactMarkdown from 'react-markdown';
 import Container from '../container';
 import HR from '../hr';
+import { SummaryDto, SummaryItemDto } from '../../types/dto/projects.dto';
+import SummarySkeleton from '../skeleton/summary-skeleton';
+import { FaSync } from 'react-icons/fa';
+import type { IconType } from 'react-icons';
+
+// 컴포넌트에서 사용할 때
+const SyncIcon: IconType = FaSync;
 
 const SummaryWrapper = styled(Container)`
   display: flex;
@@ -25,6 +33,69 @@ const SummaryHeader = styled.div`
   background-color: #fff;
   border: 16px solid #fff;
   border-bottom: none;
+`;
+
+const HeaderContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+`;
+
+const TitleSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const RefreshButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f8f9fa;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  font-size: 14px;
+  color: #6c757d;
+  width: 20px;
+  height: 20px;
+
+  &:hover {
+    background-color: #f8f9fa;
+    color: #495057;
+  }
+
+  &.spinning {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const TimeElapsed = styled.span`
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: 400;
 `;
 
 const SummaryContent = styled.div`
@@ -96,24 +167,141 @@ const sampleResources = `## 📋 티켓 정보
 - 완료 후 PROJ-1235 (프로필 공유 기능) 연계 개발 예정
 `;
 
-export default function SummaryContainer() {
+interface SummaryContainerProps {
+  summaries?: SummaryDto[];
+  summaryItems?: SummaryItemDto[];
+  loading?: boolean;
+  error?: string | null;
+  onRefresh?: () => void;
+}
+
+export default function SummaryContainer({
+  summaries = [],
+  summaryItems = [],
+  loading = false,
+  error = null,
+  onRefresh,
+}: SummaryContainerProps) {
+  const [refreshing, setRefreshing] = useState(false);
+  const [timeElapsed, setTimeElapsed] = useState('');
+
+  const displayContent =
+    summaryItems.length > 0
+      ? summaryItems.map(s => s.content).join('\n\n')
+      : summaries.length > 0
+        ? summaries.map(s => s.content).join('\n\n')
+        : sampleResources;
+
+  const lastUpdatedDate =
+    summaryItems.length > 0
+      ? new Date(summaryItems[0].updated_at)
+      : summaries.length > 0
+        ? new Date(summaries[0].updatedAt)
+        : new Date();
+
+  const lastUpdated = lastUpdatedDate.toLocaleString();
+
+  // Calculate time elapsed from last update
+  const calculateTimeElapsed = () => {
+    const now = new Date();
+    const diffMs = now.getTime() - lastUpdatedDate.getTime();
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffDays > 0) {
+      return `${diffDays}일 전`;
+    } else if (diffHours > 0) {
+      return `${diffHours}시간 전`;
+    } else if (diffMinutes > 0) {
+      return `${diffMinutes}분 전`;
+    } else {
+      return '방금 전';
+    }
+  };
+
+  // Update time elapsed every minute
+  useEffect(() => {
+    const updateTime = () => {
+      setTimeElapsed(calculateTimeElapsed());
+    };
+
+    updateTime(); // Initial update
+    const interval = setInterval(updateTime, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, [lastUpdatedDate]);
+
+  const handleRefresh = async (): Promise<void> => {
+    if (!onRefresh || refreshing) return;
+
+    setRefreshing(true);
+    try {
+      await onRefresh();
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  if (error) {
+    return (
+      <SummaryWrapper>
+        <SummaryHeader>
+          <HeaderContent>
+            <TitleSection>
+              <p style={{ margin: 0, textAlign: 'start' }}>요약</p>
+              <RefreshButton
+                onClick={handleRefresh}
+                disabled={refreshing || loading}
+                className={refreshing ? 'spinning' : ''}
+                title="요약 새로고침"
+              >
+                {SyncIcon({ size: 14 }) as React.ReactElement}
+              </RefreshButton>
+            </TitleSection>
+            {timeElapsed && <TimeElapsed>{timeElapsed}</TimeElapsed>}
+          </HeaderContent>
+          <HR height={1} margin="0" />
+        </SummaryHeader>
+        <SummaryContent>
+          <div style={{ padding: '16px', textAlign: 'center', color: 'red' }}>
+            Error: {error}
+          </div>
+        </SummaryContent>
+      </SummaryWrapper>
+    );
+  }
+
   return (
     <SummaryWrapper>
       <SummaryHeader>
-        <p style={{ margin: '0 0 8px 0', textAlign: 'start' }}>요약</p>
+        <HeaderContent>
+          <TitleSection>
+            <p style={{ margin: 0, textAlign: 'start' }}>요약</p>
+            <RefreshButton
+              onClick={handleRefresh}
+              disabled={refreshing || loading}
+              className={refreshing ? 'spinning' : ''}
+              title="요약 새로고침"
+            >
+              {FaSync({ size: 14 }) as React.ReactElement}
+            </RefreshButton>
+          </TitleSection>
+          {timeElapsed && <TimeElapsed>{timeElapsed}</TimeElapsed>}
+        </HeaderContent>
         <HR height={1} margin="0" />
       </SummaryHeader>
 
       <SummaryContent>
-        {sampleResources ? (
-          <ReactMarkdown>{sampleResources}</ReactMarkdown>
+        {loading ? (
+          <SummarySkeleton />
         ) : (
-          <p>리소스가 없습니다.</p>
+          <ReactMarkdown>{displayContent}</ReactMarkdown>
         )}
       </SummaryContent>
 
       <SummaryFooter>
-        <p>last updated: {new Date().toLocaleDateString()}</p>
+        <p>last updated: {lastUpdated}</p>
       </SummaryFooter>
     </SummaryWrapper>
   );

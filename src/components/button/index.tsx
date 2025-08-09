@@ -18,7 +18,7 @@ interface ButtonProps {
 
 const StyledButton = styled.button<{
   variant: 'primary' | 'secondary';
-  isFull: boolean;
+  $isFull: boolean;
 }>`
   display: flex;
   align-items: center;
@@ -32,7 +32,7 @@ const StyledButton = styled.button<{
   cursor: pointer;
   transition: all 0.2s ease;
   min-height: 48px;
-  width: ${({ isFull }) => (isFull ? '100%' : 'auto')};
+  width: ${({ $isFull }) => ($isFull ? '100%' : 'auto')};
 
   ${({ variant }) =>
     variant === 'primary'
@@ -83,7 +83,7 @@ export default function Button({
       onClick={onClick}
       disabled={disabled}
       variant={variant}
-      isFull={isFull}
+      $isFull={isFull}
       type="button"
     >
       {LeftIcon && (
