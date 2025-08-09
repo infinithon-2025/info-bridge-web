@@ -117,6 +117,19 @@ export const useProjectSummaries = (projectId: number) => {
     try {
       setLoading(true);
       setError(null);
+      const _ = await fetch(
+        `${BASE_URL}/api/projects/${projectId}/summarize-items/`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id: projectId }),
+        }
+      );
+      // This endpoint is used to trigger summarization, not to fetch summaries
+      // So we don't need to handle the response here
+
       const response = await fetch(
         `${BASE_URL}/api/projects/${projectId}/summaries/`
       );
