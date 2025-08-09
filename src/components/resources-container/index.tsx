@@ -95,7 +95,7 @@ const transformToResourcesFormat = (items: LinkItemDto[]) => {
     ...item,
     id: item.id?.toString() ?? 'undefined',
     type: item.materialType || 'unknown',
-    label: item.title || 'Untitled',
+    label: item.title || item.body || 'Untitled',
     href: item.link || '#',
     checked: item.isFixed && item.isActive,
   }));

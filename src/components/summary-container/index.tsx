@@ -300,9 +300,9 @@ export default function SummaryContainer({
         )}
       </SummaryContent>
 
-      <SummaryFooter>
+      {/* <SummaryFooter>
         <p>last updated: {lastUpdated}</p>
-      </SummaryFooter>
+      </SummaryFooter> */}
     </SummaryWrapper>
   );
 }

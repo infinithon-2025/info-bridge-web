@@ -125,7 +125,7 @@ const transformToRecommendationFormat = (recommendations: LinkItemDto[]) => {
   return recommendations.map(rec => ({
     id: rec.id.toString(),
     type: rec.materialType,
-    label: rec.title,
+    label: rec.title || rec.body || 'Untitled',
     href: rec.link,
     checked: rec.isFixed && rec.isActive,
   }));

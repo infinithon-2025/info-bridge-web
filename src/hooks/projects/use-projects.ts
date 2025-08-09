@@ -131,7 +131,7 @@ export const useProjectSummaries = (projectId: number) => {
       // So we don't need to handle the response here
 
       const response = await fetch(
-        `${BASE_URL}/api/projects/${projectId}/summaries/`
+        `${BASE_URL}/api/projects/${projectId}/latest-summary/`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
