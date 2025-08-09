@@ -1,6 +1,8 @@
-import Container from '../components/container';
 import GridContainer from '../components/grid-container';
+import Navbar from '../components/navbar';
+import RecommendationContainer from '../components/recommendation-container';
 import ResourcesContainer from '../components/resources-container';
+import SummaryContainer from '../components/summary-container';
 
 export default function ProjectsPage() {
   return (
@@ -22,7 +24,7 @@ export default function ProjectsPage() {
         },
       }}
     >
-      <div>navbar</div>
+      <Navbar userName="Developer Kim" userEmail="developer@infobridge.com" />
       <GridContainer
         css={{
           gridTemplateColumns: '1fr 1.5fr 1fr',
@@ -41,11 +43,10 @@ export default function ProjectsPage() {
         }}
       >
         <ResourcesContainer />
-        <Container>Container 2</Container>
-        <Container>Container 3</Container>
+        <SummaryContainer />
+        <RecommendationContainer />
         {/* <Container>Container 4</Container> */}
       </GridContainer>
-      <div>footer</div>
     </GridContainer>
   );
 }
